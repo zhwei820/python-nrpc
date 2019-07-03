@@ -50,7 +50,7 @@ def get_span_str(span1):
 
 
 async def req(c):
-    for ii in range(1):
+    for ii in range(100):
         span_id1 = randomnize.getrandbits(32)
 
         with tracer.start_span('TestSpan') as span:
@@ -73,8 +73,6 @@ async def req(c):
                 span1.log_kv({'event': 'ChildSpanChildSpan', })
 
                 try:
-                    print(get_span_str(span1))
-                    print(span1.span_id)
 
                     r = await c.SayHello(
                         helloworld_pb2.HelloRequest(name='test11', spaninfo=get_span_str(span1)))
@@ -105,7 +103,7 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     nc, c = loop.run_until_complete(main(loop))
 
-    tasks = [req(c) for ii in range(1)]
+    tasks = [req(c) for ii in range(1000)]
     # 返回一个列表,内容为各个tasks的返回值
     status_list = loop.run_until_complete(asyncio.gather(*tasks))
 
